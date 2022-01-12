@@ -16,9 +16,11 @@ export default function Maps({ navigation, route }) {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [mapRegion, setMapRegion] = useState(null);
-  const [markerContainer, setMarkerContainer] = useState([]);
+  const [markers, setMarkers] = useState([]);
   const [tempRegion, setTempRegion] = useState(null);
   const [desc, setDesc] = useState("my location");
+  const [selected, setSelected] = useState(false);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -47,33 +49,38 @@ export default function Maps({ navigation, route }) {
     })();
   }, []);
 
-  // console.warn(route.params);
-
   let marker = null;
   if (tempRegion && mapRegion) {
-    marker = (
-      <Marker
-        coordinate={mapRegion}
-        title="me"
-        description={desc}
-        draggable={true}
-        // onPress={handleDesc}
-        onDragEnd={(e) => {
-          setTempRegion({
-            latitude: e.nativeEvent.coordinate.latitude,
-            longitude: e.nativeEvent.coordinate.longitude,
-            longitudeDelta: 0.0922,
-            latitudeDelta: 0.0422,
-          });
-        }}
-      ></Marker>
-    );
+    marker = {
+      id: 0,
+      latitude: mapRegion.latitude,
+      longitude: mapRegion.longitude,
+      description: desc,
+      color: "green",
+      colorSelected: "blue",
+      coloralt: "red",
+    };
+    // <Marker
+    //   coordinate={mapRegion}
+    //   title="me"
+    //   description={desc}
+    //   draggable={true}
+    //   // onPress={handleDesc}
+    //   onDragEnd={(e) => {
+    //     setTempRegion({
+    //       latitude: e.nativeEvent.coordinate.latitude,
+    //       longitude: e.nativeEvent.coordinate.longitude,
+    //       longitudeDelta: 0.0922,
+    //       latitudeDelta: 0.0422,
+    //     });
+    //   }}
+    // ></Marker>
   }
 
   // use flatlist
   const getDetailsHandler = () => {
     if (marker !== null) {
-      setMarkerContainer((markers) => [...markers, marker]);
+      setMarkers((markers) => [...markers, marker]);
     }
   };
 
@@ -81,38 +88,75 @@ export default function Maps({ navigation, route }) {
     console.log(data);
   };
 
-  return (
-    <View style={styles.container}>
-      <View>
-        {/* <Search mapRegion={mapRegion} /> */}
-        {/* {places} */}
-        <Search Region={mapRegion} />
+  const handleDesc = (index) => {
+    // console.log(`marker with index ${index} is pressed`);
+    setSelected(true);
+    setIndex(index);
+    if (index !== 0) {
+      console.log(index);
+    }
+    // if (route.params.height !== undefined) {
+    //   setDesc(`Water logging: ${route.params.height}`);
+    // }
+  };
 
-        <MapView
-          initialRegion={mapRegion}
-          style={styles.map}
-          // onLongPress={createMarker}
-        >
-          {markerContainer.map((marker) => marker)}
-        </MapView>
-        <View style={styles.buttonLocation}>
-          <View style={styles.btnpallet}>
-            <Button
-              title="Get Location"
-              buttonStyle={styles.btnstyle}
-              containerStyle={styles.btncontainer}
-              titleStyle={styles.btntitle}
-              onPress={getDetailsHandler}
-            />
-            {/* {console.log(Details)} */}
-            <Button
-              title="Set Location"
-              buttonStyle={styles.btnstyle}
-              containerStyle={styles.btncontainer}
-              titleStyle={styles.btntitle}
-              onPress={() => navigation.navigate("details")}
-            />
-          </View>
+  return (
+    <View>
+      {/* <Search mapRegion={mapRegion} /> */}
+      {/* {places} */}
+      <Search Region={mapRegion} />
+
+      <MapView
+        initialRegion={mapRegion}
+        style={styles.map}
+        // onLongPress={createMarker}
+      >
+        {console.log(markers)}
+        {markers.map((marker, index) => {
+          return (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+              }}
+              pinColor={"red"}
+              title="me"
+              description={marker.description}
+              draggable={true}
+              onPress={() => handleDesc(index)}
+              onDragEnd={(e) => {
+                setTempRegion({
+                  latitude: e.nativeEvent.coordinate.latitude,
+                  longitude: e.nativeEvent.coordinate.longitude,
+                  longitudeDelta: 0.0922,
+                  latitudeDelta: 0.0422,
+                });
+                marker.id = index;
+                markers[index].latitude = e.nativeEvent.coordinate.latitude;
+                markers[index].longitude = e.nativeEvent.coordinate.longitude;
+              }}
+            ></Marker>
+          );
+        })}
+      </MapView>
+      <View style={styles.buttonLocation}>
+        <View style={styles.btnpallet}>
+          <Button
+            title="Get Location"
+            buttonStyle={styles.btnstyle}
+            containerStyle={styles.btncontainer}
+            titleStyle={styles.btntitle}
+            onPress={getDetailsHandler}
+          />
+          {/* {console.log(Details)} */}
+          <Button
+            title="Set Location"
+            buttonStyle={styles.btnstyle}
+            containerStyle={styles.btncontainer}
+            titleStyle={styles.btntitle}
+            onPress={() => navigation.navigate("details")}
+          />
         </View>
       </View>
     </View>

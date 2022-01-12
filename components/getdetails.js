@@ -19,7 +19,7 @@ const GetDetails = (props) => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [mapRegion, setMapRegion] = useState(null);
-  const [markerContainer, setMarkerContainer] = useState([]);
+  const [markers, setMarkers] = useState([]);
   const [tempRegion, setTempRegion] = useState(null);
   const [desc, setDesc] = useState("my location");
 
@@ -52,35 +52,44 @@ const GetDetails = (props) => {
 
   let marker = null;
   if (tempRegion && mapRegion) {
-    marker = (
-      <Marker
-        coordinate={mapRegion}
-        title="me"
-        description={desc}
-        draggable={true}
-        // onPress={handleDesc}
-        onDragEnd={(e) => {
-          setTempRegion({
-            latitude: e.nativeEvent.coordinate.latitude,
-            longitude: e.nativeEvent.coordinate.longitude,
-            longitudeDelta: 0.0922,
-            latitudeDelta: 0.0422,
-          });
-        }}
-      ></Marker>
-    );
+    marker = {
+      
+      latitude: mapRegion.latitude,
+      longitude: mapRegion.longitude,
+      description: desc
+    }
+      // <Marker
+      //   coordinate={mapRegion}
+      //   title="me"
+      //   description={desc}
+      //   draggable={true}
+      //   // onPress={handleDesc}
+      //   onDragEnd={(e) => {
+      //     setTempRegion({
+      //       latitude: e.nativeEvent.coordinate.latitude,
+      //       longitude: e.nativeEvent.coordinate.longitude,
+      //       longitudeDelta: 0.0922,
+      //       latitudeDelta: 0.0422,
+      //     });
+      //   }}
+      // ></Marker>
+    
   }
 
   // use flatlist
   const getDetailsHandler = () => {
     if (marker !== null) {
-      setMarkerContainer((markers) => [...markers, marker]);
+      setmarkers((markers) => [...markers, marker]);
     }
   };
 
   const getHeight = (data) => {
     console.log(data);
   };
+
+  const handleDesc = (index) => {
+    setDesc(`Water logging: ${route.params.}`)
+  }
 
   return (
     <View>
@@ -93,7 +102,24 @@ const GetDetails = (props) => {
         style={styles.map}
         // onLongPress={createMarker}
       >
-        {markerContainer.map((marker) => marker)}
+        {markers.map((marker, index) => {
+          <Marker
+            key={index}
+            coordinate={{marker.latitude, marker.longitude}}
+            title="me"
+            description={marker.description}
+            draggable={true}
+            onPress={handleDesc}
+            onDragEnd={(e) => {
+              setTempRegion({
+                latitude: e.nativeEvent.coordinate.latitude,
+                longitude: e.nativeEvent.coordinate.longitude,
+                longitudeDelta: 0.0922,
+                latitudeDelta: 0.0422,
+              });
+            }}
+          ></Marker>
+        })}
       </MapView>
       <View style={styles.buttonLocation}>
         <View style={styles.btnpallet}>
