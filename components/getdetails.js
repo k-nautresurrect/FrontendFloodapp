@@ -110,7 +110,9 @@ const GetDetails = (props) => {
             buttonStyle={styles.btnstyle}
             containerStyle={styles.btncontainer}
             titleStyle={styles.btntitle}
-            onPress={() => props.nav.navigate("details")}
+            onPress={() =>
+              props.nav.navigate("details", { navigation: props.nav })
+            }
           />
         </View>
       </View>

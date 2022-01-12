@@ -3,7 +3,7 @@ import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { Input, Icon, Slider, Image, Button } from "react-native-elements";
 import ForDesc from "../components/fordesc";
 
-export default function Details() {
+export default function Details({ navigation, route }) {
   const [num, onChangeNumber] = React.useState(1);
   const [vertValue, setVertValue] = useState(0);
   const [heightValue, setHeightValue] = useState(0);
@@ -33,6 +33,7 @@ export default function Details() {
 
   const heightHandler = () => {
     setHeightValue(valheight);
+    navigation.navigate("maps", { height: valheight });
   };
   // const setHeight = ()
 
