@@ -1,39 +1,57 @@
 import React, { useState } from "react";
 import { SafeAreaView, View, Text, StyleSheet } from "react-native";
 import { Input, Icon, Slider, Image, Button } from "react-native-elements";
+import VerticalSlider from "rn-vertical-slider";
 import ForDesc from "../components/fordesc";
 
 export default function Details({ navigation, route }) {
   const [num, onChangeNumber] = React.useState(1);
   const [vertValue, setVertValue] = useState(0);
   const [heightValue, setHeightValue] = useState(0);
+  const [slidervalue, setSliderValue] = useState(0);
+  const [height, setHeight] = useState(0);
 
-  const valueobj = {
-    20: "Head",
-    25: "Chest",
-    30: "Upper Abdomen",
-    35: "Waist",
-    40: "Knee",
-    45: "Ankle",
-  };
+  const valueobj = ["Ankle", "knee", "Waist", "Upper Abdomen", "Chest", "Head"];
 
-  const numberHandler = (text) => {
-    onChangeNumber(text);
-  };
+  // const numberHandler = (text) => {
+  //   onChangeNumber(text);
+  // };
 
-  console.log(`fromheight: ${vertValue}`);
+  // console.log(`fromheight: ${vertValue}`);
 
   let heightP = 0;
   let valheight = 0;
   if (vertValue !== 0) {
-    heightP = vertValue / 5;
-    heightP = heightP - 3;
-    valheight = Math.ceil(num * ((6 - (heightP - 1)) / 6));
+    heightP = vertValue / 6;
+    valheight = Math.ceil(height * ((6 - (heightP - 1)) / 6));
   }
+
+  // let heightP = 0;
+  // let partition = 1;
+  // let arrPoint = [];
+  // if (height !== 0) {
+  //   partition = Math.ceil(height / 6);
+  //   for (let i = 0; i < 6; i++) {
+  //     arrPoint.push(Math.ceil(height * ((i + 1) / 6)));
+  //   }
+  //   for (let i = 0; i < 6; i++) {
+  //     if (slidervalue === arrPoint[i]) {
+  //       console.log(`slidervalue is ${slidervalue}`);
+  //       console.log(`the string is ${arrPoint[i]}`);
+  //       setVertValue(i);
+  //       console.log(`vert value changes to ${vertValue}`);
+  //     }
+  //   }
+  // }
 
   const heightHandler = () => {
     setHeightValue(valheight);
     navigation.navigate("maps", { height: valheight });
+  };
+
+  const heightendHandler = (text) => {
+    setHeight(text);
+    // console.log(`height handler ${height}`);
   };
   // const setHeight = ()
 
@@ -50,20 +68,41 @@ export default function Details({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <Input
+        style={styles.inputContainer}
         label="Height in cm"
         // placeholder="please enter your height"
-        onChangeText={numberHandler}
-        // onEndEditing={heightHandler}
+        // onChangeText={numberHandler}
+        onChangeText={heightendHandler}
         keyboardType="numeric"
         leftIcon={{ type: "font-awesome", name: "chevron-right" }}
       />
       <View style={styles.mainContainer}>
         <View style={styles.sliderView}>
-          <Text style={{ padding: 25, width: 120, textAlign: "center" }}>
+          {/* <Text style={{ padding: 25, width: 120, textAlign: "center" }}>
             {valueobj[vertValue]}
-          </Text>
+          </Text> */}
 
-          <Slider
+          <View style={{ padding: 25, width: 120, textAlign: "center" }}>
+            <Text>{slidervalue}</Text>
+            <Text>{valueobj[vertValue]}</Text>
+          </View>
+
+          <VerticalSlider
+            disabled={false}
+            min={0}
+            max={height}
+            onChange={(value) => setVertValue(value)}
+            onComplete={(value) => {
+              setSliderValue(value);
+            }}
+            width={50}
+            height={275}
+            step={1}
+            borderRadius={5}
+            minimumTrackTintColor={"#0077b6"}
+            maximumTrackTintColor={"#00b4d8"}
+          />
+          {/* <Slider
             //   style={{ transform: [{ rotate: "0deg" }] }}
             value={vertValue}
             onValueChange={setVertValue}
@@ -79,16 +118,16 @@ export default function Details({ navigation, route }) {
             thumbProps={{
               children: (
                 <Icon
-                  name="heartbeat"
+                  name="tint"
                   type="font-awesome"
                   size={20}
                   reverse
                   containerStyle={{ bottom: 20, right: 20 }}
-                  color="#f50"
+                  color="#0066b2"
                 />
               ),
             }}
-          />
+          /> */}
         </View>
 
         <View>
@@ -105,20 +144,27 @@ export default function Details({ navigation, route }) {
         titleStyle={styles.btntitle}
         onPress={heightHandler}
       />
-      <ForDesc height={heightValue} />
-      {console.log(`vertValue: ${vertValue}`)}
+      <Text>{valheight}</Text>
+      {/* {console.log(`vertValue: ${vertValue}`)}
       {console.log(`num: ${num}`)}
-      {console.log(`heightValue: ${heightValue}`)}
+      {console.log(`heightValue: ${heightValue}`)} */}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 50,
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  inputContainer: {
+    // position: "absolute",
+    // top: 80,
+
+    alignSelf: "center",
   },
   sliderView: {
     padding: 20,
@@ -127,11 +173,13 @@ const styles = StyleSheet.create({
     height: 300,
     justifyContent: "center",
     alignItems: "stretch",
+    paddingTop: 30,
+    paddingBottom: 1,
   },
   item: {
     aspectRatio: 1,
     width: "50%",
-    height: 300,
+    height: 315,
     flex: 0,
   },
   mainContainer: {

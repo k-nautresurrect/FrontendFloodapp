@@ -20,7 +20,7 @@ export default function Maps({ navigation, route }) {
   const [tempRegion, setTempRegion] = useState(null);
   const [desc, setDesc] = useState("my location");
   const [selected, setSelected] = useState(false);
-  const [index, setIndex] = useState(0);
+  const [Index, setIndex] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -49,10 +49,11 @@ export default function Maps({ navigation, route }) {
     })();
   }, []);
 
+  let height = route.params;
+
   let marker = null;
   if (tempRegion && mapRegion) {
     marker = {
-      id: 0,
       latitude: mapRegion.latitude,
       longitude: mapRegion.longitude,
       description: desc,
@@ -90,11 +91,26 @@ export default function Maps({ navigation, route }) {
 
   const handleDesc = (index) => {
     // console.log(`marker with index ${index} is pressed`);
-    setSelected(true);
     setIndex(index);
-    if (index !== 0) {
-      console.log(index);
+    if (height) {
+      markers[Index].description = `Water logging: ${route.params.height} cm`;
+      height = 0;
     }
+    // setSelected(true);
+    // setIndex(index);
+    // if (index !== 0) {
+    //   console.log(index);
+    // }
+    // if (height && selected === true) {
+    //   setDesc(`Water logging: ${route.params.height} cm`);
+    //   markers[index].description = `Water logging: ${route.params.height} cm`;
+    //   console.log(`Water logging: ${route.params.height}`);
+    //   setSelected(false);
+    // } else {
+    //   markers[index].description = "My location";
+    //   // setSelected(false);
+    // }
+
     // if (route.params.height !== undefined) {
     //   setDesc(`Water logging: ${route.params.height}`);
     // }
@@ -122,9 +138,11 @@ export default function Maps({ navigation, route }) {
               }}
               pinColor={"red"}
               title="me"
-              description={marker.description}
+              onSelect={() => handleDesc(index)}
+              description={markers[index].description}
               draggable={true}
               onPress={() => handleDesc(index)}
+              // onCalloutPress={}
               onDragEnd={(e) => {
                 setTempRegion({
                   latitude: e.nativeEvent.coordinate.latitude,
@@ -132,7 +150,6 @@ export default function Maps({ navigation, route }) {
                   longitudeDelta: 0.0922,
                   latitudeDelta: 0.0422,
                 });
-                marker.id = index;
                 markers[index].latitude = e.nativeEvent.coordinate.latitude;
                 markers[index].longitude = e.nativeEvent.coordinate.longitude;
               }}

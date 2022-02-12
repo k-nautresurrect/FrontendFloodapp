@@ -4077,6 +4077,7 @@ __metadata:
     react-native-safe-area-context: 3.3.2
     react-native-screens: ~3.10.1
     react-native-web: 0.17.1
+    rn-vertical-slider: ^2.0.2
   languageName: unknown
   linkType: soft
 
@@ -7383,6 +7384,16 @@ __metadata:
   bin:
     rimraf: ./bin.js
   checksum: 3ea587b981a19016297edb96d1ffe48af7e6af69660e3b371dbfc73722a73a0b0e9be5c88089fbeeb866c389c1098e07f64929c7414290504b855f54f901ab10
+  languageName: node
+  linkType: hard
+
+"rn-vertical-slider@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "rn-vertical-slider@npm:2.0.2"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 037cbe1b12329c52032f9920b4da1d01d9f4b815eebb1acb204cb560dc3c9836bbee5da2518f9b25d00f4c4ebffecf3cee0813ad0abb9c5411ed4f00741e53bc
   languageName: node
   linkType: hard
 
